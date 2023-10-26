@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastramento de funcionários</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<header>
+    <h1>Sistema de cadastro interno</h1>
+</header>
+
+<body>
+
+    <h1>Cadastro de Funcionários</h1>
+
+    <form id="productForm">
+        <label for="nome">Nome do Funcionário:</label>
+        <input type="text" id="nome" required>
+        <label for="data">Data de nascimento:</label>
+        <input type="date" id="data" required>
+        <label for="endereco">Endereço:</label>
+        <input type="text" id="endereco" required>
+        <label for="cpf">CPF:</label>
+        <input type="number" id="cpf" required>
+        <button type="button" onclick="onFormSubmit()">Salvar</button>
+    </form>
+
+    <h2>Quadro de Funcionários</h2>
+
+    <table id="Info">
+        <thead>
+            <tr>
+                <th>Nome do Funcionário</th>
+                <th>Data de Nascimento</th>
+                <th>Endereço</th>
+                <th>CPF</th>
+                <th>Opções</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+    <form id="productForm">
+        <a id="button" href="index.html" target="_blank">
+            <button>Cadastramento de produtos</button>
+        </a>
+    </form>
+
+    <script>
+        let selectedRow = null;
+
+        function onFormSubmit() {
+            if (validate()) {
+                if (selectedRow === null) {
+                    insertNewRecord();
+                } else {
+                    updateRecord();
+                }
+                resetForm();
+            }
+        }
+
+        function insertNewRecord() {
+            const table = document.getElementById("Info").getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow(table.length);
+
+            const nome = document.getElementById("nome").value;
+            const data = document.getElementById("data").value;
+            const endereco = document.getElementById("endereco").value;
+            const cpf = document.getElementById("cpf").value;
+
+            const cell1 = newRow.insertCell(0);
+            cell1.innerHTML = nome;
+            const cell2 = newRow.insertCell(1);
+            cell2.innerHTML = data;
+            const cell3 = newRow.insertCell(2);
+            cell3.innerHTML = endereco;
+            const cell4 = newRow.insertCell(3);
+            cell4.innerHTML = cpf;
+            const cell5 = newRow.insertCell(4);
+            cell5.innerHTML = `<button onClick="onEdit(this)">Edit</button> <button onClick="onDelete(this)">Delete</button>`;
+        }
+
+        function resetForm() {
+            document.getElementById("nome").value = "";
+            document.getElementById("data").value = "";
+            document.getElementById("endereco").value = "";
+            document.getElementById("cpf").value = "";
+
+            selectedRow = null;
+        }
+
+        function onEdit(td) {
+            selectedRow = td.parentElement.parentElement;
+            const cells = [
+                document.getElementById("nome"),
+                document.getElementById("data"),
+                document.getElementById("endereco"),
+                document.getElementById("cpf")
+            ];
+
+            for (let i = 0; i < selectedRow.cells.length - 1; i++) {
+                cells[i].value = selectedRow.cells[i].innerHTML;
+            }
+        }
+
+        function updateRecord() {
+            const cells = [
+                document.getElementById("nome"),
+                document.getElementById("data"),
+                document.getElementById("endereco"),
+                document.getElementById("cpf")
+            ];
+
+            for (let i = 0; i < selectedRow.cells.length - 1; i++) {
+                selectedRow.cells[i].innerHTML = cells[i].value;
+            }
+        }
+
+        function onDelete(td) {
+            if (confirm('Você deseja excluir este registro?')) {
+                const row = td.parentElement.parentElement;
+                document.getElementById('Info').deleteRow(row.rowIndex);
+                resetForm();
+            }
+        }
+
+        function validate() {
+            const nome = document.getElementById("nome").value;
+            if (nome === "") {
+                alert("O campo Nome do Funcionário não pode estar vazio.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+
+</body>
+</html>
